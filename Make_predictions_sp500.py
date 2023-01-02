@@ -67,5 +67,7 @@ def make_predictions():
     plt.plot(x[1], hist['Close'][idx:idx+horizon], 'g-', label="True Values")
     plt.legend()
     plt.grid()
+    plt.savefig("90_days_forecast.png")
+    plt.show()
     
 make_predictions()
