@@ -32,4 +32,6 @@ if __name__ == "__main__":
         producer.send(cac40_topic, data[slice(None), cac40_ind], timestamp_ms=ts)
 
         # Nikkei 225
-        producer.send(nikkei225_topic, data[slice(None), nikkei225_ind], timestamp_ms=ts)
+        producer.send(
+            nikkei225_topic, data[slice(None), nikkei225_ind], timestamp_ms=ts
+        )
