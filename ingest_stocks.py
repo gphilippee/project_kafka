@@ -71,5 +71,11 @@ if __name__ == "__main__":
     delay = 0.1
 
     ingest_stocks(
-        sp500_ind, sp500_topic, cac40_ind, cac40_topic, nikkei225_ind, nikkei225_topic
+        sp500_ind,
+        sp500_topic,
+        cac40_ind,
+        cac40_topic,
+        nikkei225_ind,
+        nikkei225_topic,
+        delay,
     )
