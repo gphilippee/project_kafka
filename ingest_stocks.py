@@ -39,6 +39,7 @@ def ingest_stocks(
 
     producer = KafkaProducer(value_serializer=lambda s: s.to_json().encode())
 
+    # artificial datastream
     for row in tickers_history.iterrows():
         ts, data = row
         ts = int(ts.timestamp())
@@ -68,7 +69,7 @@ if __name__ == "__main__":
 
     # Delay in seconds between 2 rows of the dataframe
     # In a real case, it should be 86400 seconds (1 day)
-    delay = 0.1
+    delay = 0.01
 
     ingest_stocks(
         sp500_ind,
