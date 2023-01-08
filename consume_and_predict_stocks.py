@@ -16,7 +16,7 @@ def plot_results(date, y_true, y_pred_holt, y_pred_snarimax):
     plt.plot(y_pred_holt, "r-", label="Predictions HoltWinters")
     plt.plot(y_pred_snarimax, "y-", label="Predictions SNARIMAX")
     plt.plot(y_true, "g-", label="True Values")
-    # to avoid flat plot if
+    # to avoid flat plot if forecast goes to far
     # plt.ylim(bottom=0, top=min(10_000, np.max([y_pred_holt, y_pred_snarimax]) + 500))
     plt.legend()
     plt.grid()
