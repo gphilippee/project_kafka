@@ -86,8 +86,8 @@ def make_predictions():
     holt_model = time_series.HoltWinters(alpha=0.3, beta=0.1, gamma=0.6, seasonality=24)
 
     # Define 2nd model
-    period = 12
-    snarimax_model = time_series.SNARIMAX(p=period, d=1, q=period)
+    # If d=0, ARMA, else ARIMA
+    snarimax_model = time_series.SNARIMAX(p=2, d=1, q=1)
 
     # to plot evolution of MSE through time
     forecast_dates = []  # array for dates of forecast
