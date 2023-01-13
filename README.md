@@ -2,6 +2,13 @@
 
 Authors: Romain Bernard, Vincent Tchoumba, Guillaume Philippe
 
+## Delivrables
+
+Put the code Source .py and HTML in Zip file (Moodle) and available on a Github  
+Presentation PowerPoint & Results (5” min): Problem, Solution, Results
+Demo (Proof that the code compiles and everything run) – 5 min
+Send an email to mariam.barry@polytechnique.edu with groupe ID - Student Names in object + Github link, slides and put all the materials (code source & slides)  on the Moodle of Ecole Polytechnique before 15/01/2023 23h59
+
 ## Description
 
 Project 7 : (Trading Data) Collect trading data using Yahoo finance API and use online regression (from river) to predict markets stocks of CAC40, S&P500, Google, Facebook & Amazon or any others enterprise.
