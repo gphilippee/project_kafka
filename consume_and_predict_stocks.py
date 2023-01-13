@@ -17,7 +17,7 @@ def plot_metrics_models(models):
     nb_models = len(models)
     fig, ax = plt.subplots(nb_models, 1, figsize=(15, 10))
     for i in range(nb_models):
-        ax[i].set_title(f"Metrics through time")
+        ax[i].set_title(models[i].topic + f" - Metrics through time")
         ax[i].plot(
             models[i].forecast_dates, models[i].rmse_holt_list, label="HoltWinters"
         )
@@ -25,7 +25,6 @@ def plot_metrics_models(models):
             models[i].forecast_dates, models[i].rmse_snarimax_list, label="SNARIMAX"
         )
         ax[i].plot(models[i].forecast_dates, models[i].rmse_cst_list, label="Constant")
-        ax[i].set_title(models[i].topic)
         ax[i].legend()
         ax[i].set_xlabel("Date")
         ax[i].set_ylim(0, models[i].max_value * 1.1)
