@@ -30,26 +30,42 @@ def plot_metrics_models(models):
     plt.close()
 
 
+class ConstantModel:
+    def learn_one(self, x):
+        return self
+
+    def forecast(self, horizon, x):
+        return [x for _ in range(horizon)]
+
+
 class StreamModels:
     def __init__(self, topic, horizon, forecast_delta):
+        self.topic: str = topic
+        self.idx: int = 0
+        self.horizon: int = horizon
+        self.forecast_delta: int = forecast_delta
+        # define models
+        self.cst_model = ConstantModel()
+        self.snarimax_model = time_series.SNARIMAX(p=2, d=1, q=1)
         self.holt_model = time_series.HoltWinters(
             alpha=0.3, beta=0.1, gamma=0.6, seasonality=24
         )
-        self.snarimax_model = time_series.SNARIMAX(p=2, d=1, q=1)
-        self.horizon: int = horizon
-        self.forecast_delta: int = forecast_delta
-        self.topic: str = topic
+        # define memory
+        self.y_true_memory: Union[List, None] = None
+        # TODO: dict
+        self.forecast_dates: List = []
+        self.forecast_holt: List = []
+        self.forecast_snarimax: List = []
+        self.forecast_cst: List = []
+        # TODO: dict
         self.rmse_holt_list: List[float] = []
         self.rmse_snarimax_list: List[float] = []
-        self.y_true_memory: Union[List, None] = None
-        self.idx: int = 0
-        self.forecast_dates: List = []
-        self.forecast_holt = []
-        self.forecast_snarimax = []
+        self.rmse_cst_list: List[float] = []
 
-    def _forecast(self):
-        forecast_holt = self.holt_model.forecast(horizon=horizon)
-        forecast_snarimax = self.snarimax_model.forecast(horizon=horizon)
+    def _forecast(self, x):
+        forecast_holt = self.holt_model.forecast(horizon)
+        forecast_snarimax = self.snarimax_model.forecast(horizon)
+        self.forecast_cst = self.cst_model.forecast(horizon, x)
 
         # A stock can't go below 0
         self.forecast_holt = np.maximum(forecast_holt, 0)
@@ -58,15 +74,21 @@ class StreamModels:
     def _scores(self):
         rmse_holt = metrics.RMSE()
         rmse_snarimax = metrics.RMSE()
+        rmse_cst = metrics.RMSE()
 
-        for yt, yh, ys in zip(
-            self.y_true_memory, self.forecast_holt, self.forecast_snarimax
+        for yt, yh, ys, yc in zip(
+            self.y_true_memory,
+            self.forecast_holt,
+            self.forecast_snarimax,
+            self.forecast_cst,
         ):
             rmse_holt.update(yt, yh)
             rmse_snarimax.update(yt, ys)
+            rmse_cst.update(yt, yc)
 
         self.rmse_holt_list.append(rmse_holt.get())
         self.rmse_snarimax_list.append(rmse_snarimax.get())
+        self.rmse_cst_list.append(rmse_cst.get())
 
     def train(self, x, date):
         # learn_one on models
@@ -83,7 +105,7 @@ class StreamModels:
 
         # predict and set memory
         if self.idx >= 365 and self.idx % self.forecast_delta == 0:
-            self._forecast()
+            self._forecast(x)
             self.forecast_dates.append(date)
             self.y_true_memory = []
         self.idx += 1
@@ -92,6 +114,7 @@ class StreamModels:
         plt.figure(figsize=(15, 8))
         plt.plot(self.forecast_holt, "r-", label="Predictions HoltWinters")
         plt.plot(self.forecast_snarimax, "y-", label="Predictions SNARIMAX")
+        plt.plot(self.forecast_cst, "b-", label="Predictions Constant")
         plt.plot(self.y_true_memory, "g-", label="True Values")
         # to avoid flat plot if forecast goes to far
         # plt.ylim(bottom=0, top=min(10_000, np.max([y_pred_holt, y_pred_snarimax]) + 500))
