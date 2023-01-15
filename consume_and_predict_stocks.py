@@ -27,7 +27,7 @@ def plot_metrics_models(models):
         ax[i].plot(models[i].forecast_dates, models[i].rmse_cst_list, label="Constant")
         ax[i].legend()
         ax[i].set_xlabel("Date")
-        ax[i].set_ylim(0, models[i].max_value * 1.1)
+        #ax[i].set_ylim(0, models[i].max_value * 1.1)
     plt.tight_layout()
     plt.savefig(metrics_plot_file)
     plt.close()
@@ -50,7 +50,7 @@ class StreamModels:
         self.max_value: int = 0
         # define models
         self.cst_model = ConstantModel()
-        self.snarimax_model = time_series.SNARIMAX(p=2, d=1, q=1)
+        self.snarimax_model = time_series.SNARIMAX(p=1, d=0, q=1)
         self.holt_model = time_series.HoltWinters(
             alpha=0.3, beta=0.1, gamma=0.6, seasonality=24
         )
@@ -150,7 +150,7 @@ def make_predictions():
         nikkei225_topic: nikkei225_models,
     }
 
-    launch_date = datetime.datetime.now().date()
+    launch_date = (datetime.datetime.now() - datetime.timedelta(days=10)).date()
 
     for msg in consumer_indexes:
         date = pd.to_datetime(msg.timestamp, unit="s").date()  # get date
@@ -182,6 +182,6 @@ if __name__ == "__main__":
         os.mkdir("stocks_forecast")
 
     plot_folder = f"stocks_forecast/"
-    metrics_plot_file = "metrics_through_time.png"
+    metrics_plot_file = f"metrics_through_time_forecast_{horizon}.png"
 
     make_predictions()
