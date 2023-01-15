@@ -53,3 +53,15 @@ python -m venv .venv
 ```sh
 pip install -r requirements.txt
 ```
+
+5. Launch Producer
+```sh
+python ingest_stocks.py
+```
+
+6. Launch Consumer
+```sh
+python consume_and_predict_stocks.py
+```
+
+7. Look at plots
