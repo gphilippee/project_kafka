@@ -26,18 +26,11 @@ For each option, each group should use at least 3 different data streams, with o
 
 To Do: Compare online Regression vs Batch Regression / Time Series forecasting and discuss the performance.
 
-Bonus: Use recent stock market data in 2022 .
-R
+Bonus: Use recent stock market data in 2022
+
 Online resources: 
 You can use the Python library to collect Yahoo Finance data in streaming https://pypi.org/project/yfinance/
 You can compute time-series statistics and moving averages (MACD) for features engineering https://www.statsmodels.org/stable/tsa.html
-
-
-Online resources: Use Alpha Vantage
-https://www.alphavantage.co/support/#:~:text=Are%20there%20usage%2Ffrequency%20limits,volume%2C%20please%20visit%20premium%20membership.
-
-Binance API Python package https://algotrading101.com/learn/binance-python-api-guide/#:~:text=The%20Binance%20API%20is%20a,to%20send%20and%20receive%20data.
-
 
 ## How to run ?
 
