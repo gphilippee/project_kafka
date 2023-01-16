@@ -67,9 +67,9 @@ class StreamModels:
         self.rmse_cst_list: List[float] = []
 
     def _forecast(self, x):
-        forecast_holt = self.holt_model.forecast(horizon)
-        forecast_snarimax = self.snarimax_model.forecast(horizon)
-        self.forecast_cst = self.cst_model.forecast(horizon, x)
+        forecast_holt = self.holt_model.forecast(self.horizon)
+        forecast_snarimax = self.snarimax_model.forecast(self.horizon)
+        self.forecast_cst = self.cst_model.forecast(self.horizon, x)
 
         # A stock can't go below 0
         self.forecast_holt = np.maximum(forecast_holt, 0)
@@ -107,12 +107,14 @@ class StreamModels:
         if self.y_true_memory is not None and len(self.y_true_memory) < horizon:
             self.y_true_memory.append(x)
         elif self.y_true_memory is not None:
+            print("Calculating scores")
             self._scores(date)
             self._plot_forecasts(date)
             self.y_true_memory = None
 
         # predict and set memory
         if self.idx >= 365 and self.idx % self.forecast_delta == 0:
+            print("Forecasting", self.horizon, "days on", date)
             self._forecast(x)
             self.y_true_memory = []
         self.idx += 1
