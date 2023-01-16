@@ -114,7 +114,7 @@ class StreamModels:
 
         # predict and set memory
         if self.idx >= 365 and self.idx % self.forecast_delta == 0:
-            print("Forecasting", self.horizon, "days on", date)
+            print("Forecasting", self.horizon, "days on", date, "for", self.topic)
             self._forecast(x)
             self.y_true_memory = []
         self.idx += 1
