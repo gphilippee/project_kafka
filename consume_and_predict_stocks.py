@@ -27,10 +27,25 @@ def plot_metrics_models(models):
         ax[i].plot(models[i].forecast_dates, models[i].rmse_cst_list, label="Constant")
         ax[i].legend()
         ax[i].set_xlabel("Date")
-        #ax[i].set_ylim(0, models[i].max_value * 1.1)
+        # ax[i].set_ylim(0, models[i].max_value * 1.1)
     plt.tight_layout()
     plt.savefig(metrics_plot_file)
     plt.close()
+
+
+def print_average_metrics(models):
+    iterables = [[m.topic for m in models], ["HoltWinters", "SNARIMAX", "Constant"]]
+    m_idx = pd.MultiIndex.from_product(iterables, names=["Topic", "Model"])
+    values = [
+        np.mean(metrics)
+        for m in models
+        for metrics in [m.rmse_holt_list, m.rmse_snarimax_list, m.rmse_cst_list]
+    ]
+    avg_metrics = pd.Series(
+        data=values,
+        index=m_idx,
+    )
+    print(avg_metrics)
 
 
 class ConstantModel:
@@ -95,7 +110,7 @@ class StreamModels:
         self.rmse_snarimax_list.append(rmse_snarimax.get())
         self.rmse_cst_list.append(rmse_cst.get())
 
-    def train(self, x, date):
+    def learn_one(self, x, date):
         if x > self.max_value:
             self.max_value = x
 
@@ -162,11 +177,12 @@ def make_predictions():
             continue
 
         if msg.topic in topic2model.keys():
-            topic2model[msg.topic].train(close, date)
+            topic2model[msg.topic].learn_one(close, date)
 
         # plot at the end
         if date >= launch_date:
             plot_metrics_models(list(topic2model.values()))
+            print_average_metrics(list(topic2model.values()))
             break
 
 
